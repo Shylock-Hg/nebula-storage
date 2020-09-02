@@ -51,6 +51,8 @@ protected:
     void buildEdgeColName(const std::vector<cpp2::EdgeProp>& edgeProps);
 
 private:
+    static std::unordered_set<std::string> reservedVertexProps;
+
     bool isEdge_ = false;                   // true for edge, false for tag
     std::unique_ptr<StorageExpressionContext> expCtx_;
     std::vector<std::unique_ptr<Expression>> yields_;

@@ -30,6 +30,36 @@ public:
     virtual RowReader* reader() const = 0;
 };
 
+class SingleVertexIterator : public StorageIterator {
+public:
+    explicit SingleVertexIterator(std::unique_ptr<kvstore::KVIterator> iter)
+        : iter_(std::move(iter)) {}
+
+    bool valid() const override {
+        return iter_->valid();
+    }
+
+    // next will skip invalid data, until it points to a valid data or it is invalid
+    void next() override {
+        return iter_->next();
+    }
+
+    folly::StringPiece key() const override {
+        return iter_->key();
+    }
+
+    folly::StringPiece val() const override {
+        return iter_->val();
+    }
+
+    RowReader* reader() const override {
+        LOG(FATAL) << "Unimplemented";
+    }
+
+private:
+    std::unique_ptr<kvstore::KVIterator>   iter_;
+};
+
 class SingleTagIterator : public StorageIterator {
 public:
     SingleTagIterator(PlanContext* planCtx,

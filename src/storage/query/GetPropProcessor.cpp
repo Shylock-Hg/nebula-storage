@@ -213,5 +213,9 @@ void GetPropProcessor::onProcessFinished() {
     resp_.set_props(std::move(resultDataSet_));
 }
 
+/*static*/ std::unordered_set<std::string> GetPropProcessor::reservedVertexProps = {
+    "_tags"
+};
+
 }  // namespace storage
 }  // namespace nebula
