@@ -98,7 +98,14 @@ void GrantProcessor::process(const cpp2::GrantRoleReq& req) {
     folly::SharedMutex::WriteHolder userHolder(LockUtils::userLock());
     folly::SharedMutex::ReadHolder spaceHolder(LockUtils::spaceLock());
     const auto& roleItem = req.get_role_item();
-    auto spaceId = roleItem.get_space_id();
+    const auto &spaceName = roleItem.get_space_name();
+    auto spaceIdResult = getSpaceId(spaceName);
+    if (!spaceIdResult.ok()) {
+        handleErrorCode(MetaCommon::to(spaceIdResult.status()));
+        onFinished();
+        return;
+    }
+    auto spaceId = spaceIdResult.value();
     /**
      *  for cloud authority, need init a god user by this interface. the god user default grant to
      *  meta space (kDefaultSpaceId). so skip the space check.
@@ -127,7 +134,14 @@ void RevokeProcessor::process(const cpp2::RevokeRoleReq& req) {
     folly::SharedMutex::WriteHolder userHolder(LockUtils::userLock());
     folly::SharedMutex::ReadHolder spaceHolder(LockUtils::spaceLock());
     const auto& roleItem = req.get_role_item();
-    auto spaceId = roleItem.get_space_id();
+    const auto &spaceName = roleItem.get_space_name();
+    auto spaceIdResult = getSpaceId(spaceName);
+    if (!spaceIdResult.ok()) {
+        handleErrorCode(MetaCommon::to(spaceIdResult.status()));
+        onFinished();
+        return;
+    }
+    auto spaceId = spaceIdResult.value();
     CHECK_SPACE_ID_AND_RETURN(spaceId);
     auto userRet = userExist(roleItem.get_user_id());
     if (!userRet.ok()) {

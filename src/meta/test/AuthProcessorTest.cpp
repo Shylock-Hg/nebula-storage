@@ -242,7 +242,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::GrantRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user");
-        role.set_space_id(space1);
+        role.set_space_name("space1");
         role.set_role_type(cpp2::RoleType::GUEST);
         req.set_role_item(role);
         auto* processor = GrantProcessor::instance(kv.get());
@@ -256,7 +256,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::GrantRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user1");
-        role.set_space_id(-1);
+        role.set_space_name("no_exist_space");
         role.set_role_type(cpp2::RoleType::GUEST);
         req.set_role_item(role);
         auto* processor = GrantProcessor::instance(kv.get());
@@ -270,7 +270,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::GrantRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user1");
-        role.set_space_id(space1);
+        role.set_space_name("space1");
         role.set_role_type(cpp2::RoleType::GUEST);
         req.set_role_item(role);
         auto* processor = GrantProcessor::instance(kv.get());
@@ -284,7 +284,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::GrantRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user2");
-        role.set_space_id(space1);
+        role.set_space_name("space1");
         role.set_role_type(cpp2::RoleType::ADMIN);
         req.set_role_item(role);
         auto* processor = GrantProcessor::instance(kv.get());
@@ -298,7 +298,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::GrantRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user2");
-        role.set_space_id(space2);
+        role.set_space_name("space2");
         role.set_role_type(cpp2::RoleType::DBA);
         req.set_role_item(role);
         auto* processor = GrantProcessor::instance(kv.get());
@@ -350,7 +350,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::RevokeRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user");
-        role.set_space_id(space2);
+        role.set_space_name("space2");
         req.set_role_item(role);
         auto* processor = RevokeProcessor::instance(kv.get());
         auto f = processor->getFuture();
@@ -363,7 +363,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::RevokeRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user1");
-        role.set_space_id(-1);
+        role.set_space_name("not_exist_space");
         req.set_role_item(role);
         auto* processor = RevokeProcessor::instance(kv.get());
         auto f = processor->getFuture();
@@ -376,7 +376,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::RevokeRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user1");
-        role.set_space_id(space1);
+        role.set_space_name("space1");
         role.set_role_type(cpp2::RoleType::ADMIN);
         req.set_role_item(role);
         auto* processor = RevokeProcessor::instance(kv.get());
@@ -390,7 +390,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::RevokeRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user1");
-        role.set_space_id(space1);
+        role.set_space_name("space1");
         req.set_role_item(role);
         auto* processor = RevokeProcessor::instance(kv.get());
         auto f = processor->getFuture();
@@ -403,7 +403,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::RevokeRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user1");
-        role.set_space_id(space1);
+        role.set_space_name("space1");
         role.set_role_type(cpp2::RoleType::GUEST);
         req.set_role_item(role);
         auto* processor = RevokeProcessor::instance(kv.get());
@@ -451,7 +451,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::RevokeRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user1");
-        role.set_space_id(space1);
+        role.set_space_name("space1");
         req.set_role_item(role);
         auto* processor = RevokeProcessor::instance(kv.get());
         auto f = processor->getFuture();
@@ -496,7 +496,7 @@ TEST(AuthProcessorTest, GrantRevokeTest) {
         cpp2::GrantRoleReq req;
         decltype(req.role_item) role;
         role.set_user_id("user1");
-        role.set_space_id(space1);
+        role.set_space_name("space1");
         role.set_role_type(cpp2::RoleType::ADMIN);
         req.set_role_item(role);
         auto* processor = GrantProcessor::instance(kv.get());
