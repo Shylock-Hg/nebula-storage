@@ -143,6 +143,16 @@ add_custom_target(
     DEPENDS clean-all
 )
 
+add_custom_target(
+    install-all
+    COMMAND $(MAKE) install
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+if(TARGET install-common)
+    add_dependencies(install-all install-common)
+endif()
+
 include(CPackage)
 package(${ENABLE_PACK_ONE}
         "nebula-storage"
