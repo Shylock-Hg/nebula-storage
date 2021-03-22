@@ -39,6 +39,7 @@ static const std::unordered_map<
         {"index_status", {"__index_status__", MetaServiceUtils::parseIndexStatusKeySpaceID}},
         {"roles", {"__roles__", MetaServiceUtils::parseRoleSpace}},
         {"last_update_time", {"__last_update_time__", nullptr}},
+        {"last_leader_update_time", {"__last_leader_update_time__", nullptr}},
         {"leaders", {"__leaders__", nullptr}},
         {"listener", {"__listener__", nullptr}},
         {"statis", {"__statis__", MetaServiceUtils::parseStatisSpace}},
@@ -46,23 +47,24 @@ static const std::unordered_map<
         {"balance_plan", {"__balance_plan__", nullptr}},
         {"ft_index", {"__ft_index__", nullptr}}};
 
-static const std::string kSpacesTable         = tableMaps.at("spaces").first;         // NOLINT
-static const std::string kPartsTable          = tableMaps.at("parts").first;          // NOLINT
-static const std::string kHostsTable          = systemTableMaps.at("hosts").first;          // NOLINT
-static const std::string kTagsTable           = tableMaps.at("tags").first;           // NOLINT
-static const std::string kEdgesTable          = tableMaps.at("edges").first;          // NOLINT
-static const std::string kIndexesTable        = tableMaps.at("indexes").first;        // NOLINT
-static const std::string kIndexTable          = tableMaps.at("index").first;          // NOLINT
-static const std::string kIndexStatusTable    = tableMaps.at("index_status").first;   // NOLINT
-static const std::string kUsersTable          = systemTableMaps.at("users").first;          // NOLINT
-static const std::string kRolesTable          = tableMaps.at("roles").first;          // NOLINT
-static const std::string kConfigsTable        = systemTableMaps.at("configs").first;        // NOLINT
-static const std::string kSnapshotsTable      = systemTableMaps.at("snapshots").first;      // NOLINT
-static const std::string kLastUpdateTimeTable = tableMaps.at("last_update_time").first; // NOLINT
-static const std::string kLeadersTable        = tableMaps.at("leaders").first;          // NOLINT
-static const std::string kGroupsTable         = systemTableMaps.at("groups").first;           // NOLINT
-static const std::string kZonesTable          = systemTableMaps.at("zones").first;            // NOLINT
-static const std::string kListenerTable       = tableMaps.at("listener").first;         // NOLINT
+static const std::string kSpacesTable               = tableMaps.at("spaces").first;         // NOLINT
+static const std::string kPartsTable                = tableMaps.at("parts").first;          // NOLINT
+static const std::string kHostsTable                = systemTableMaps.at("hosts").first;          // NOLINT
+static const std::string kTagsTable                 = tableMaps.at("tags").first;           // NOLINT
+static const std::string kEdgesTable                = tableMaps.at("edges").first;          // NOLINT
+static const std::string kIndexesTable              = tableMaps.at("indexes").first;        // NOLINT
+static const std::string kIndexTable                = tableMaps.at("index").first;          // NOLINT
+static const std::string kIndexStatusTable          = tableMaps.at("index_status").first;   // NOLINT
+static const std::string kUsersTable                = systemTableMaps.at("users").first;          // NOLINT
+static const std::string kRolesTable                = tableMaps.at("roles").first;          // NOLINT
+static const std::string kConfigsTable              = systemTableMaps.at("configs").first;        // NOLINT
+static const std::string kSnapshotsTable            = systemTableMaps.at("snapshots").first;      // NOLINT
+static const std::string kLastUpdateTimeTable       = tableMaps.at("last_update_time").first; // NOLINT
+static const std::string kLastLeaderUpdateTimeTable = tableMaps.at("last_leader_update_time").first; // NOLINT
+static const std::string kLeadersTable              = tableMaps.at("leaders").first;          // NOLINT
+static const std::string kGroupsTable               = systemTableMaps.at("groups").first;           // NOLINT
+static const std::string kZonesTable                = systemTableMaps.at("zones").first;            // NOLINT
+static const std::string kListenerTable             = tableMaps.at("listener").first;         // NOLINT
 
 // Used to record the number of vertices and edges in the space
 // The number of vertices of each tag in the space
@@ -104,6 +106,20 @@ std::string MetaServiceUtils::lastUpdateTimeKey() {
 }
 
 std::string MetaServiceUtils::lastUpdateTimeVal(const int64_t timeInMilliSec) {
+    std::string val;
+    val.reserve(sizeof(int64_t));
+    val.append(reinterpret_cast<const char*>(&timeInMilliSec), sizeof(int64_t));
+    return val;
+}
+
+std::string MetaServiceUtils::lastLeaderUpdateTimeKey() {
+    std::string key;
+    key.reserve(kLastLeaderUpdateTimeTable.size());
+    key.append(kLastLeaderUpdateTimeTable.data(), kLastLeaderUpdateTimeTable.size());
+    return key;
+}
+
+std::string MetaServiceUtils::lastLeaderUpdateTimeVal(const int64_t timeInMilliSec) {
     std::string val;
     val.reserve(sizeof(int64_t));
     val.append(reinterpret_cast<const char*>(&timeInMilliSec), sizeof(int64_t));

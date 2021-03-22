@@ -38,6 +38,10 @@ public:
 
     static std::string lastUpdateTimeVal(const int64_t timeInMilliSec);
 
+    static std::string lastLeaderUpdateTimeKey();
+
+    static std::string lastLeaderUpdateTimeVal(const int64_t timeInMilliSec);
+
     static std::string spaceKey(GraphSpaceID spaceId);
 
     static std::string spaceVal(const cpp2::SpaceDesc& spaceDesc);

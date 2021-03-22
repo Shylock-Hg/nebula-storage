@@ -72,6 +72,7 @@ void HBProcessor::process(const cpp2::HBReq& req) {
     handleErrorCode(MetaCommon::to(ret));
     int64_t lastUpdateTime = LastUpdateTimeMan::get(this->kvstore_);
     resp_.set_last_update_time_in_ms(lastUpdateTime);
+    resp_.set_last_leader_update_time_in_ms(LastLeaderUpdateTimeMan::get(this->kvstore_));
     onFinished();
 }
 

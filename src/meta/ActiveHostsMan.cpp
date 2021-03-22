@@ -48,7 +48,7 @@ kvstore::ResultCode ActiveHostsMan::updateHostInfo(kvstore::KVStore* kv,
     });
     baton.wait();
     if (isUpdate) {
-        ret = LastUpdateTimeMan::update(kv, time::WallClock::fastNowInMilliSec());
+        ret = LastLeaderUpdateTimeMan::update(kv, time::WallClock::fastNowInMilliSec());
         if (ret != kvstore::ResultCode::SUCCEEDED) {
             return ret;
         }
@@ -192,6 +192,36 @@ kvstore::ResultCode LastUpdateTimeMan::update(kvstore::KVStore* kv, const int64_
 }
 
 int64_t LastUpdateTimeMan::get(kvstore::KVStore* kv) {
+    CHECK_NOTNULL(kv);
+    auto key = MetaServiceUtils::lastUpdateTimeKey();
+    std::string val;
+    auto ret = kv->get(kDefaultSpaceId, kDefaultPartId, key, &val);
+    if (ret == kvstore::ResultCode::SUCCEEDED) {
+        return *reinterpret_cast<const int64_t*>(val.data());
+    }
+    return 0;
+}
+
+kvstore::ResultCode
+LastLeaderUpdateTimeMan::update(kvstore::KVStore* kv, const int64_t timeInMilliSec) {
+    CHECK_NOTNULL(kv);
+    std::vector<kvstore::KV> data;
+    data.emplace_back(MetaServiceUtils::lastUpdateTimeKey(),
+                      MetaServiceUtils::lastUpdateTimeVal(timeInMilliSec));
+
+    folly::SharedMutex::WriteHolder wHolder(LockUtils::lastUpdateTimeLock());
+    folly::Baton<true, std::atomic> baton;
+    kvstore::ResultCode ret;
+    kv->asyncMultiPut(kDefaultSpaceId, kDefaultPartId, std::move(data),
+                      [&] (kvstore::ResultCode code) {
+        ret = code;
+        baton.post();
+    });
+    baton.wait();
+    return kv->sync(kDefaultSpaceId, kDefaultPartId);
+}
+
+int64_t LastLeaderUpdateTimeMan::get(kvstore::KVStore* kv) {
     CHECK_NOTNULL(kv);
     auto key = MetaServiceUtils::lastUpdateTimeKey();
     std::string val;

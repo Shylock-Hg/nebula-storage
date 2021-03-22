@@ -149,6 +149,15 @@ protected:
     LastUpdateTimeMan() = default;
 };
 
+class LastLeaderUpdateTimeMan final {
+public:
+    explicit LastLeaderUpdateTimeMan(...) = delete;
+
+    static kvstore::ResultCode update(kvstore::KVStore* kv, const int64_t timeInMilliSec);
+
+    static int64_t get(kvstore::KVStore* kv);
+};
+
 }  // namespace meta
 }  // namespace nebula
 
